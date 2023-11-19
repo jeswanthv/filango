@@ -11,13 +11,11 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import React from "react";
-import Navbar from "../components/Navbar";
 import FilePond from "../components/Filepond";
 
 const Home = () => {
   return (
     <>
-      <Navbar />
       <div width="100%">
         <Box margin={"auto"} maxW={"1200px"}>
           <Flex
