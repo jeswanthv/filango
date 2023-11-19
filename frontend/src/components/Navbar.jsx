@@ -16,6 +16,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { Link } from "react-router-dom";
 
 const NavLink = (props) => {
   const { children } = props;
@@ -42,7 +43,14 @@ export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+      <Box
+        position={"fixed"}
+        width={"100%"}
+        zIndex={"2"}
+        top={"0"}
+        bg={useColorModeValue("gray.100", "gray.900")}
+        px={4}
+      >
         <Flex
           mx={"5"}
           h={16}
@@ -92,8 +100,9 @@ export default function Navbar() {
                   </Center>
                   <br />
                   <MenuDivider />
-                  <MenuItem>Account Info</MenuItem>
-                  <MenuItem>Logout</MenuItem>
+                  <Link to="/login">
+                    <MenuItem>SignIn</MenuItem>
+                  </Link>
                 </MenuList>
               </Menu>
             </Stack>
