@@ -199,10 +199,7 @@ app.get("/api/users", async (req, res) => {
 
 //@CREATE A USER
 app.post(`/api/signup`, async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: "Missing parameters" });
-  }
+  const { name, email, password, firstName, lastName } = req.body;
 
   const hashedPassword = await hashPassword(password);
 
@@ -211,6 +208,8 @@ app.post(`/api/signup`, async (req, res) => {
       data: {
         name,
         email,
+        firstName,
+        lastName,
         password: hashedPassword,
       },
     });
