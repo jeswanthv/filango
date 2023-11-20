@@ -11,6 +11,7 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import dotenv from "dotenv";
 import crypto from "crypto";
+import cors from "cors";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ const randomImageName = (bytes = 32) =>
 
 export const prisma = new PrismaClient();
 export const app = express();
+app.use(cors());
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -198,7 +200,7 @@ app.get("/api/users", async (req, res) => {
 });
 
 //@CREATE A USER
-app.post(`/api/signup`, async (req, res) => {
+app.post(`/api/register`, async (req, res) => {
   const { name, email, password, firstName, lastName } = req.body;
 
   const hashedPassword = await hashPassword(password);
@@ -220,7 +222,7 @@ app.post(`/api/signup`, async (req, res) => {
 });
 
 //@LOGIN USER
-app.get(`/api/login`, async (req, res) => {
+app.post(`/api/login`, async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -230,7 +232,7 @@ app.get(`/api/login`, async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
 
     if (match) {
-      res.send({ userId: user.id });
+      res.send({ userId: user.id, userName: user.firstName });
     } else {
       res.status(500).json({ error: "Invalid credentials" });
     }

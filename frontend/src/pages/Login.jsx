@@ -15,22 +15,54 @@ import {
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
+import config from "../constants";
+import axios from "axios";
+import { AuthContext } from "../context/authContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const toast = useToast();
+  const apiUrl = config.apiUrl;
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useContext(AuthContext);
 
-  const handleUpload = (e) => {
+  useEffect(() => {
+    const user = localStorage.getItem("userId");
+    if (user) {
+      console.log(user);
+      navigate("/");
+    }
+  }, []);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
+    try {
+      const response = await axios.post(`${apiUrl}/api/login`, {
+        email,
+        password,
+      });
+      login(response?.data?.userId, response?.data?.userName);
+      navigate("/");
+
+      // Handle the response as needed
       toast({
-        title: "Empty credentials.",
+        title: "Successfully logged in",
+        position: "top",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    } catch (error) {
+      // Handle errors
+      toast({
+        title: error?.response?.data?.error,
         position: "top",
         description: "Please type in valid credentials",
         status: "error",
@@ -38,7 +70,6 @@ export default function Login() {
         isClosable: true,
       });
     }
-    console.log(email, password);
   };
 
   return (
@@ -60,8 +91,8 @@ export default function Login() {
           w={"450px"}
         >
           <Stack spacing={4}>
-            <form onSubmit={handleUpload}>
-              <FormControl id="email">
+            <form onSubmit={handleLogin}>
+              <FormControl id="email" isRequired>
                 <FormLabel>Email address</FormLabel>
                 <Input
                   type="email"
@@ -69,7 +100,7 @@ export default function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </FormControl>
-              <FormControl id="password">
+              <FormControl id="password" isRequired>
                 <FormLabel>Password</FormLabel>
                 <InputGroup>
                   <Input
