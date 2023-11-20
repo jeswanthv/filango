@@ -1,19 +1,18 @@
-import {
-  Box,
-  Card,
-  CardBody,
-  Checkbox,
-  Container,
-  Flex,
-  Heading,
-  Stack,
-  Text,
-  useColorMode,
-} from "@chakra-ui/react";
-import React from "react";
+import { Box, Card, CardBody, Flex, Stack, Text } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import FilePond from "../components/Filepond";
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = localStorage.getItem("userId");
+    if (!user) {
+      navigate("/login");
+    }
+  }, []);
+
   return (
     <>
       <div width="100%">
@@ -31,7 +30,7 @@ const Home = () => {
           </Flex>
         </Box>
         <Box mt={5} margin={"auto"} maxW={"800px"}>
-          <Card mt={5}>
+          <Card mx={4} mt={5}>
             <CardBody>
               <Text>View a list of all your files.</Text>
             </CardBody>

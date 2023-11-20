@@ -14,33 +14,33 @@ import {
   useColorMode,
   Center,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
-
-const NavLink = (props) => {
-  const { children } = props;
-
-  return (
-    <Box
-      as="a"
-      px={2}
-      py={1}
-      rounded={"md"}
-      _hover={{
-        textDecoration: "none",
-        bg: useColorModeValue("gray.200", "gray.700"),
-      }}
-      href={"#"}
-    >
-      {children}
-    </Box>
-  );
-};
+import { useContext } from "react";
+import { AuthContext } from "../context/authContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user, logout } = useContext(AuthContext);
+  const toast = useToast();
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Successfully logged out",
+      position: "top",
+      status: "success",
+      duration: 9000,
+      isClosable: true,
+    });
+    navigate("/login");
+  };
+
   return (
     <>
       <Box
@@ -96,13 +96,17 @@ export default function Navbar() {
                   </Center>
                   <br />
                   <Center>
-                    <p>Username</p>
+                    {user?.storedUserId && <p>{user.storedUserName}</p>}
                   </Center>
                   <br />
                   <MenuDivider />
-                  <Link to="/login">
-                    <MenuItem>SignIn</MenuItem>
-                  </Link>
+                  {user?.storedUserId ? (
+                    <MenuItem onClick={handleLogout}>Log out</MenuItem>
+                  ) : (
+                    <Link to="/login">
+                      <MenuItem>Log in</MenuItem>
+                    </Link>
+                  )}
                 </MenuList>
               </Menu>
             </Stack>
