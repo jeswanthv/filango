@@ -15,12 +15,14 @@ import {
   Center,
   Text,
   useToast,
+  Image,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
+import filango from "../assets/Filango.png";
 
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -57,7 +59,8 @@ export default function Navbar() {
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <Box>
+          <Flex alignItems={"center"}>
+            <Image src={filango} width={"70px"} />
             <Text
               fontSize={"2xl"}
               fontFamily={"monospace"}
@@ -65,7 +68,7 @@ export default function Navbar() {
             >
               FILANGO
             </Text>
-          </Box>
+          </Flex>
 
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}>
