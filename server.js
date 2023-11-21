@@ -48,11 +48,11 @@ app.use(express.json());
 
 //@CREATE A FILE
 app.post(`/api/file`, upload.single("file"), async (req, res) => {
-  const { userId, title, description } = req.body;
+  const { userId } = req.body;
   console.log("userId", userId);
-  console.log("title", title);
-  console.log("description", description);
-  console.log("req.file", req.file);
+  console.log("file", req.file);
+  const title = req.file.originalname;
+  console.log("title", req.file.originalname);
   const fileName = randomImageName();
   const params = {
     Bucket: bucketName,
@@ -67,7 +67,6 @@ app.post(`/api/file`, upload.single("file"), async (req, res) => {
   const file = await prisma.file.create({
     data: {
       title,
-      description,
       userId: parseInt(userId),
       fileName,
     },
@@ -148,12 +147,21 @@ app.get("/api/admin/files", async (req, res) => {
 
 //@GET ALL USER FILES
 app.get("/api/files", async (req, res) => {
-  const { userId } = req.body;
+  const { user } = req.query;
   const files = await prisma.file.findMany({
     where: {
-      userId: parseInt(userId),
+      userId: parseInt(user),
     },
   });
+  for (const file of files) {
+    const getObjectParams = {
+      Bucket: bucketName,
+      Key: file.fileName,
+    };
+    const command = new GetObjectCommand(getObjectParams);
+    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+    file.url = url;
+  }
   res.json(files);
 });
 
@@ -177,7 +185,6 @@ app.get(`/api/file/:id`, async (req, res) => {
 |----------------------------|
 */
 
-//Hash the password
 // Function to hash a password
 async function hashPassword(password) {
   try {
