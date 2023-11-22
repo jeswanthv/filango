@@ -50,7 +50,7 @@ export default function Register() {
         duration: 9000,
         isClosable: true,
       });
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       // Handle errors
       toast({
