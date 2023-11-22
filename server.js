@@ -40,6 +40,10 @@ const upload = multer({ storage: storage });
 
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send({ message: "Successfully running" });
+});
+
 /*
 |----------------------------|
 |------File Operations-------|
