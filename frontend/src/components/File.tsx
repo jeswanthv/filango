@@ -1,39 +1,43 @@
 import {
   Box,
+  Button,
+  ButtonGroup,
   Card,
   CardHeader,
   Center,
   Flex,
-  Square,
-  Text,
   Icon,
-  Spacer,
-  IconButton,
-  MenuButton,
   Menu,
-  Portal,
-  MenuList,
+  MenuButton,
   MenuItem,
+  MenuList,
   Modal,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
   ModalBody,
+  ModalCloseButton,
+  ModalContent,
   ModalFooter,
-  useDisclosure,
-  Button,
+  ModalHeader,
   ModalOverlay,
-  ButtonGroup,
-  useToast,
+  Portal,
+  Text,
+  useDisclosure,
+  useToast
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { FaFile } from "react-icons/fa";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import axios from "axios";
-import Fileicon from "./Fileicon";
+import { useState } from "react";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import config from "../constants";
+import Fileicon from "./Fileicon";
 
-const File = (props) => {
+interface FileProps {
+  file: {
+    id: number;
+    title: string;
+    url: string;
+  };
+}
+
+const File = (props:FileProps) => {
   const apiUrl = config.apiUrl;
 
   const { file } = props;
@@ -55,7 +59,7 @@ const File = (props) => {
     console.log("delete");
     const user = localStorage.getItem("userId");
     const res = await axios.delete(`${apiUrl}/api/file/${file.id}`, {
-      data: { userId: parseInt(user) },
+      data: { userId: parseInt(user || "") },
     });
     toast({
       title: res.data.message,

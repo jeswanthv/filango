@@ -1,49 +1,57 @@
+import { ArrowRightIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Card,
+  CardHeader,
+  Center,
+  CloseButton,
   Container,
   Flex,
   Heading,
-  Stack,
-  useColorMode,
-  Image,
-  CloseButton,
-  SlideFade,
   IconButton,
-  Tooltip,
-  useToast,
-  Card,
-  Center,
-  CardHeader,
+  Image,
+  SlideFade,
+  Stack,
   Text,
+  Tooltip,
+  useColorMode,
+  useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { ArrowRightIcon } from "@chakra-ui/icons";
 import axios from "axios";
-import Fileicon from "./Fileicon";
+import { useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
 import config from "../constants";
+import Fileicon from "./Fileicon";
+
+interface File {
+  type: string;
+  preview: string;
+  name: string;
+}
 
 export default function Filepond() {
   const apiUrl = config.apiUrl;
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<[]>([]);
   const { colorMode } = useColorMode();
   const toast = useToast();
 
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
+    return () => {
+      (files as { preview: string }[]).forEach((file) => URL.revokeObjectURL(file.preview));
+    };
   }, []);
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "*": [],
     },
     onDrop: (acceptedFiles) => {
-      setFiles(
+      setFiles((prevState) =>
         acceptedFiles.map((file) =>
           Object.assign(file, {
             preview: URL.createObjectURL(file),
           })
-        )
+        ) as []
       );
     },
     maxFiles: 1,
@@ -52,8 +60,8 @@ export default function Filepond() {
   const uploadFile = async () => {
     const formData = new FormData();
     const user = localStorage.getItem("userId");
-    formData.append("file", files[0]);
-    formData.append("userId", user);
+    formData.append("file", files[0]||"");
+    formData.append("userId", user||"");
     const res = await axios.post(`${apiUrl}/api/file`, formData, {
       headers: {
         "content-type": "multipart/form-data",
@@ -69,7 +77,7 @@ export default function Filepond() {
     window.location.reload();
   };
 
-  const thumbs = files.map((file) => (
+  const thumbs = files.map((file:File) => (
     <SlideFade
       in
       offsetY="-20px"
@@ -78,7 +86,6 @@ export default function Filepond() {
       <Tooltip hasArrow label="Cancel upload" placement="top">
         <CloseButton onClick={() => setFiles([])} size="md" />
       </Tooltip>
-      {console.log(file)}
       {file?.type?.includes("image") ? (
         <Image
           height="250px"

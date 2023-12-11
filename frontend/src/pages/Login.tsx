@@ -1,27 +1,25 @@
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
-  Flex,
   Box,
+  Button,
+  Link as ChakraLink,
+  Checkbox,
+  Flex,
   FormControl,
   FormLabel,
-  Input,
-  Checkbox,
-  Stack,
-  Button,
   Heading,
-  Text,
-  useColorModeValue,
-  Link as ChakraLink,
+  Input,
   InputGroup,
   InputRightElement,
+  Stack,
+  Text,
+  useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
-import { Link as ReactRouterLink } from "react-router-dom";
-import { useToast } from "@chakra-ui/react";
-import config from "../constants";
 import axios from "axios";
-import { AuthContext } from "../context/authContext";
-import { useNavigate } from "react-router-dom";
+import { SyntheticEvent, useEffect, useState } from "react";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import config from "../constants";
 
 export default function Login() {
   const toast = useToast();
@@ -31,7 +29,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useContext(AuthContext);
 
   useEffect(() => {
     const user = localStorage.getItem("userId");
@@ -41,14 +38,15 @@ export default function Login() {
     }
   }, []);
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e:SyntheticEvent) => {
     e.preventDefault();
     try {
       const response = await axios.post(`${apiUrl}/api/login`, {
         email,
         password,
       });
-      login(response?.data?.userId, response?.data?.userName);
+      localStorage.setItem("userId", response?.data?.userId);
+      localStorage.setItem("userName", response?.data?.userName);
       navigate("/");
 
       // Handle the response as needed
@@ -62,7 +60,7 @@ export default function Login() {
     } catch (error) {
       // Handle errors
       toast({
-        title: error?.response?.data?.error,
+        title: (error as any)?.response?.data?.error,
         position: "top",
         description: "Please type in valid credentials",
         status: "error",

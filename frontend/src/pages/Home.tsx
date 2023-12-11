@@ -8,7 +8,7 @@ import {
   StatNumber,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import File from "../components/File";
 import FilePond from "../components/Filepond";
@@ -16,11 +16,11 @@ import config from "../constants";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<[]|null>(null);
 
   const apiUrl = config.apiUrl;
 
-  const fetchData = async (user) => {
+  const fetchData = async (user:String|null) => {
     try {
       const response = await axios.get(`${apiUrl}/api/files`, {
         params: { user },
@@ -43,7 +43,7 @@ const Home = () => {
 
   return (
     <>
-      <div width="100%">
+      <div >
         <Box margin={"4rem auto"} maxW={"1200px"}>
           <Flex
             direction={"column"}

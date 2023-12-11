@@ -1,38 +1,34 @@
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import {
-  Box,
-  Flex,
   Avatar,
+  Box,
   Button,
+  Center,
+  Flex,
+  Image,
   Menu,
   MenuButton,
-  MenuList,
-  MenuItem,
   MenuDivider,
-  useDisclosure,
-  useColorModeValue,
+  MenuItem,
+  MenuList,
   Stack,
-  useColorMode,
-  Center,
   Text,
-  useToast,
-  Image,
+  useColorMode,
+  useColorModeValue,
+  useToast
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { Link } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../context/authContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import filango from "../assets/Filango.png";
 
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { user, logout } = useContext(AuthContext);
   const toast = useToast();
+  const user = localStorage.getItem("userName");
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
+    localStorage.clear();
     toast({
       title: "Successfully logged out",
       position: "top",
@@ -99,11 +95,11 @@ export default function Navbar() {
                   </Center>
                   <br />
                   <Center>
-                    {user?.storedUserId && <p>{user.storedUserName}</p>}
+                    {<p>{user}</p>}
                   </Center>
                   <br />
                   <MenuDivider />
-                  {user?.storedUserId ? (
+                  {user? (
                     <MenuItem onClick={handleLogout}>Log out</MenuItem>
                   ) : (
                     <Link to="/login">

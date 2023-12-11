@@ -1,14 +1,13 @@
 import { Icon } from "@chakra-ui/react";
-import React from "react";
-import { FaFile } from "react-icons/fa";
 import {
-  FaFileImage,
-  FaFileWord,
-  FaFilePdf,
-  FaFilePowerpoint,
+  FaFile, FaFileImage, FaFilePdf,
+  FaFilePowerpoint, FaFileWord
 } from "react-icons/fa";
-
-const Fileicon = ({ title }) => {
+interface FileiconProps { 
+  title: string;
+}
+const Fileicon = (props:FileiconProps) => {
+  const { title } = props;
   if (title.includes("jp")) {
     return <Icon fontSize={"20px"} as={FaFileImage} />;
   } else if (title.includes("doc")) {
