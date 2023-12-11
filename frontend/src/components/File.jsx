@@ -31,8 +31,11 @@ import { FaFile } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import axios from "axios";
 import Fileicon from "./Fileicon";
+import config from "../constants";
 
 const File = (props) => {
+  const apiUrl = config.apiUrl;
+
   const { file } = props;
   const [signedUrl, setSignedUrl] = useState(file.url);
 
@@ -51,10 +54,9 @@ const File = (props) => {
   const handleDelete = async () => {
     console.log("delete");
     const user = localStorage.getItem("userId");
-    const res = await axios.delete(
-      `http://localhost:3000/api/file/${file.id}`,
-      { data: { userId: parseInt(user) } }
-    );
+    const res = await axios.delete(`${apiUrl}/api/file/${file.id}`, {
+      data: { userId: parseInt(user) },
+    });
     toast({
       title: res.data.message,
       position: "top",

@@ -152,21 +152,25 @@ app.get("/api/admin/files", async (req, res) => {
 //@GET ALL USER FILES
 app.get("/api/files", async (req, res) => {
   const { user } = req.query;
-  const files = await prisma.file.findMany({
-    where: {
-      userId: parseInt(user),
-    },
-  });
-  for (const file of files) {
-    const getObjectParams = {
-      Bucket: bucketName,
-      Key: file.fileName,
-    };
-    const command = new GetObjectCommand(getObjectParams);
-    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-    file.url = url;
+  try {
+    const files = await prisma.file.findMany({
+      where: {
+        userId: parseInt(user),
+      },
+    });
+    for (const file of files) {
+      const getObjectParams = {
+        Bucket: bucketName,
+        Key: file.fileName,
+      };
+      const command = new GetObjectCommand(getObjectParams);
+      const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      file.url = url;
+    }
+    res.json(files);
+  } catch (error) {
+    res.json({ message: "Failed to fetch files" });
   }
-  res.json(files);
 });
 
 //@GET SINGLE FILE
@@ -249,6 +253,7 @@ app.post(`/api/login`, async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: "Invalid credentials" });
+    console.log(error);
   }
 });
 
@@ -263,6 +268,6 @@ app.delete(`/api/user`, async (req, res) => {
   res.json({ message: "Successfully deleted" });
 });
 
-const server = app.listen(3000, () =>
-  console.log(`🚀 Server ready at: http://localhost:3000`)
+const server = app.listen(8080, () =>
+  console.log(`🚀 Server ready at: http://localhost:8080`)
 );

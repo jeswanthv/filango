@@ -21,8 +21,10 @@ import { useDropzone } from "react-dropzone";
 import { ArrowRightIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import Fileicon from "./Fileicon";
+import config from "../constants";
 
 export default function Filepond() {
+  const apiUrl = config.apiUrl;
   const [files, setFiles] = useState([]);
   const { colorMode } = useColorMode();
   const toast = useToast();
@@ -52,7 +54,7 @@ export default function Filepond() {
     const user = localStorage.getItem("userId");
     formData.append("file", files[0]);
     formData.append("userId", user);
-    const res = await axios.post("http://localhost:3000/api/file", formData, {
+    const res = await axios.post(`${apiUrl}/api/file`, formData, {
       headers: {
         "content-type": "multipart/form-data",
       },

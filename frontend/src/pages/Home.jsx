@@ -1,22 +1,18 @@
 import {
   Box,
-  Card,
-  CardBody,
-  CardHeader,
   Flex,
   Stack,
   Stat,
   StatGroup,
   StatLabel,
   StatNumber,
-  Text,
 } from "@chakra-ui/react";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import File from "../components/File";
 import FilePond from "../components/Filepond";
 import config from "../constants";
-import axios from "axios";
-import File from "../components/File";
 
 const Home = () => {
   const navigate = useNavigate();
